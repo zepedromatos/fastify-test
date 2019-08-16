@@ -2,7 +2,7 @@
 const boom = require("boom");
 
 // Get Data Models
-const car = require("../models/Car");
+const Car = require("../models/Car");
 
 // Get All cars
 exports.getCars = async (req, reply) => {
@@ -36,7 +36,7 @@ exports.addCar = async (req, reply) => {
 };
 
 // Update an existing car
-exports.UpdateCar = async (req, reply) => {
+exports.updateCar = async (req, reply) => {
   try {
     const id = req.params.id;
     const car = req.params.body;
