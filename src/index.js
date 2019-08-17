@@ -1,24 +1,20 @@
-// Require the framework and instantiate it
-const fastify = require("fastify")({
-  logger: true
+// Import Server
+const fastify = require("./server.js");
+
+// Import external dependancies
+const gql = require("fastify-gql");
+
+// Import GraphQL Schema
+const schema = require("./schema");
+
+// Register Fastify GraphQL
+fastify.register(gql, {
+  schema,
+  graphiql: true
 });
 
-// Require external modules
-const mongoose = require("mongoose");
-
-// Import routes
+// Import Routes
 const routes = require("./routes");
-
-// Connect do DB
-mongoose
-  .connect("mongodb://localhost/mycargarage")
-  .then(() => console.log("MongoDB connected"))
-  .catch(err => console.log(err));
-
-// Declare a route
-fastify.get("/", async (request, reply) => {
-  return { hello: "world" };
-});
 
 // Import Swagger Options
 const swagger = require("./config/swagger");
@@ -26,6 +22,7 @@ const swagger = require("./config/swagger");
 // Register Swagger
 fastify.register(require("fastify-swagger"), swagger.options);
 
+// Loop over each route
 routes.forEach((route, index) => {
   fastify.route(route);
 });
@@ -33,7 +30,7 @@ routes.forEach((route, index) => {
 // Run the server!
 const start = async () => {
   try {
-    await fastify.listen(3000);
+    await fastify.listen(3000, "0.0.0.0");
     fastify.swagger();
     fastify.log.info(`server listening on ${fastify.server.address().port}`);
   } catch (err) {
